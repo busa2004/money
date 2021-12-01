@@ -2,9 +2,10 @@ package com.example.demo.dto;
 
 import java.util.Date;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import com.example.demo.domain.Action;
+import com.example.demo.domain.Category;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,9 +19,8 @@ public class MoneyDto {
 	private Long id;
 	@NotNull(message="가격은 필수입니다.")
 	private Long price;
-	@NotBlank(message="설명은 필수입니다.")
-	private String description;
+	private Action action;
 	private Date transactionDt;
-	private Date modifiedDt;
-	private Date createdDt;
+	private Category category;
+	private String description;
 }
