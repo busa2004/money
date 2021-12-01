@@ -45,5 +45,14 @@ public class ExceptionAdvice {
         return responseService.getFailResult(errors.toString());
     }
 	
+	 /***
+     * 유저 이메일 로그인 실패 시 발생시키는 예외
+     */
+    @ExceptionHandler(EmailLoginFailedCException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult emailLoginFailedException(HttpServletRequest request, EmailLoginFailedCException e) {
+        return responseService.getFailResult("로그인 실패");
+    }
+	
 	
 }

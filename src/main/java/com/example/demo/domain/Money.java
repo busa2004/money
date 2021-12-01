@@ -26,6 +26,7 @@ public class Money extends BaseTimeEntity {
 	private Long price;
 	private String description;
 	private Date transactionDt;
-	
+	private String actionFg;
+	private String category;
 
 }
