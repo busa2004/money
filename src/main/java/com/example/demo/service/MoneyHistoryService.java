@@ -48,12 +48,12 @@ public class MoneyHistoryService {
 	private final ModelMapper modelMapper;
 	
 	public MoneyHistoryResponseDto findById(Long id) throws Exception {
-		Money money = moneyRepository.findById(id).orElseThrow(CUserNotFoundException::new);
-		return modelMapper.map(money, MoneyHistoryResponseDto.class);
+		MoneyHistory moneyHistory = moneyHistoryRepository.findById(id).orElseThrow(CUserNotFoundException::new);
+		return modelMapper.map(moneyHistory, MoneyHistoryResponseDto.class);
 	}
 	
 	public List<MoneyHistoryResponseDto> findAll() {
-		return moneyRepository.findAll().stream().map(p -> modelMapper.map(p, MoneyHistoryResponseDto.class)).collect(Collectors.toList());
+		return moneyHistoryRepository.findAll().stream().map(p -> modelMapper.map(p, MoneyHistoryResponseDto.class)).collect(Collectors.toList());
 
 	}
 	
