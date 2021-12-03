@@ -1,16 +1,24 @@
 package com.example.demo.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.domain.Category;
 import com.example.demo.domain.Money;
-import com.example.demo.dto.MoneyDto;
+import com.example.demo.domain.User;
+import com.example.demo.dto.MoneyRequestDto;
+import com.example.demo.dto.MoneyResponseDto;
+import com.example.demo.exception.CCategoryNotFoundException;
+import com.example.demo.exception.CMoneyNotFoundException;
+import com.example.demo.exception.CUserNotFoundException;
 import com.example.demo.exception.CustomNotFoundException;
+import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.MoneyRepository;
+import com.example.demo.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,24 +28,39 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MoneyService {
 	
-	private MoneyRepository moneyRepository;
-	private ModelMapper modelMapper;
+	private final ModelMapper modelMapper;
+	private final MoneyRepository moneyRepository;
+	private final UserRepository userRepository;
+	private final CategoryRepository categoryRepository;
 	
-	public MoneyDto findById(Long id) throws Exception {
-		Money money = moneyRepository.findById(id).orElseThrow(() 
-				-> { throw new CustomNotFoundException("존재하지 않는 아이디");});
-		return modelMapper.map(money, MoneyDto.class);
+	public List<MoneyResponseDto> findAllByUserId(Long userId) {
+		User user = userRepository.findById(userId).orElseThrow(CUserNotFoundException::new);
+		return moneyRepository.findAllByUser(user).stream().map(p -> modelMapper.map(p, MoneyResponseDto.class)).collect(Collectors.toList());
 	}
 	
-	public List<MoneyDto> findAll() {
-		return moneyRepository.findAll().stream().map(p -> modelMapper.map(p, MoneyDto.class)).collect(Collectors.toList());
-
-	}
-	
-	@Transactional
-	public void save(MoneyDto money) throws Exception {
-		moneyRepository.save(modelMapper.map(money, Money.class));
+	public MoneyResponseDto findById(Long moneyId) {
+		Money money = moneyRepository.findById(moneyId).orElseThrow(CMoneyNotFoundException::new);
+		MoneyResponseDto moneyResponseDto= modelMapper.map(money, MoneyResponseDto.class);
+		return moneyResponseDto;
 	}
 
+	public void create(MoneyRequestDto moneyRequestDto) {
+		Category category = categoryRepository.findById(moneyRequestDto.getCategoryId()).orElseThrow(CCategoryNotFoundException::new);
+		Money money = modelMapper.map(moneyRequestDto, Money.class);
+		money.setCategory(category);
+		moneyRepository.save(money);
+	}
+
+	public void delete(Long moneyId) {
+		Money money = moneyRepository.findById(moneyId).orElseThrow(CMoneyNotFoundException::new);
+		moneyRepository.delete(money);
+	}
+	
+	public void update(Long moneyId, MoneyRequestDto moneyRequestDto) {
+		Money money = moneyRepository.findById(moneyId).orElseThrow(CMoneyNotFoundException::new);
+		money.setPrice(Optional.of(moneyRequestDto.getPrice()).orElse(money.getPrice()));
+		money.setDescription(Optional.of(moneyRequestDto.getDescription()).orElse(money.getDescription()));
+		moneyRepository.save(money);
+	}
 
 }

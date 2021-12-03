@@ -5,14 +5,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.domain.Money;
-import com.example.demo.domain.User;
+import com.example.demo.domain.Category;
+import com.example.demo.dto.MoneyRequestDto;
 import com.example.demo.dto.MoneyResponseDto;
 
-public interface MoneyRepository extends JpaRepository<Money,Long> {
-
-	List<MoneyResponseDto> findAllByUser(User user);
-
-	
+public interface CategoryRepository extends JpaRepository<Category,Long> {
 
 }
+

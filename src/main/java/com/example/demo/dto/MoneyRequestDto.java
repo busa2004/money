@@ -14,13 +14,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class MoneyDto {
+public class MoneyRequestDto {
 	
-	private Long id;
-	@NotNull(message="가격은 필수입니다.")
 	private Long price;
-	private Action action;
-	private Date transactionDt;
-	private Category category;
+	private Long categoryId;
 	private String description;
 }

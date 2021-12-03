@@ -1,26 +1,20 @@
 package com.example.demo.controller;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.common.CommonResult;
 import com.example.demo.common.ListResult;
 import com.example.demo.common.SingleResult;
-import com.example.demo.config.JwtProvider;
 import com.example.demo.dto.UserRequestDto;
 import com.example.demo.dto.UserResponseDto;
-import com.example.demo.service.MoneyService;
 import com.example.demo.service.ResponseService;
-import com.example.demo.service.SignService;
 import com.example.demo.service.UserService;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -63,6 +57,6 @@ public class UserController {
     public CommonResult delete(
             @PathVariable Long userId) {
         userService.delete(userId);
-        return responseService.getSuccesResult();
+        return responseService.getSuccessResult();
     }
 }

@@ -21,23 +21,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name="money")
+@Entity(name="money_history")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class Money extends BaseTimeEntity {
+public class MoneyHistory extends BaseTimeEntity {
 	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	@Column(name = "money_id")
+	@Column(name = "money_history_id")
 	private Long id;
 	private Long price;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
-	private String description;
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "category_id")
-	private Category category;
+	@JoinColumn(name = "money_id")
+	private Money money;
+	private String description;
+	private Date transactionDt;
+	@Enumerated(EnumType.STRING)
+	private Action action;
 
 }

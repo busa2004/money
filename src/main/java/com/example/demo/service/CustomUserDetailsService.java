@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.exception.CCategoryNotFoundException;
+import com.example.demo.exception.CUserNotFoundException;
 import com.example.demo.exception.CustomNotFoundException;
 import com.example.demo.repository.UserRepository;
 
@@ -20,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Override
     public UserDetails loadUserByUsername(String userPk) throws UsernameNotFoundException {
         return userRepository.findById(Long.parseLong(userPk))
-                .orElseThrow(() -> {throw new CustomNotFoundException("존재하지 않는 사용자입니다.");});
+                .orElseThrow(CUserNotFoundException::new);
     }
 	
 	
