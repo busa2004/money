@@ -11,7 +11,7 @@ import com.example.demo.dto.MoneyResponseDto;
 
 public interface MoneyRepository extends JpaRepository<Money,Long> {
 
-	List<MoneyResponseDto> findAllByUser(User user);
+	List<Money> findAllByUser(User user);
 
 	
 

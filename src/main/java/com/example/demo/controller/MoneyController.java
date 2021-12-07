@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import javax.servlet.http.HttpSession;
+import java.security.Principal;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +32,8 @@ public class MoneyController {
 	private ResponseService responseService;
 	
 	@GetMapping
-	public ListResult<MoneyResponseDto> findByUserId(HttpSession session) throws Exception {
-		return responseService.getListResult(moneyService.findAllByUserId(Long.parseLong(((String)session.getAttribute("userId")))));
+	public ListResult<MoneyResponseDto> findByUserId(Principal principal) throws Exception {
+		return responseService.getListResult(moneyService.findAllByUserId(Long.parseLong(principal.getName())));
 	}
 	
 	@GetMapping("/{moneyId}")
@@ -42,8 +42,8 @@ public class MoneyController {
 	}
 	
 	@PostMapping
-	public CommonResult create(@RequestBody MoneyRequestDto moneyRequestDto) throws Exception {
-		moneyService.create(moneyRequestDto);
+	public CommonResult create(Principal principal,@RequestBody MoneyRequestDto moneyRequestDto) throws Exception {
+		moneyService.create(principal,moneyRequestDto);
 		return responseService.getSuccessResult();
 	}
 	

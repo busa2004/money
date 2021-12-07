@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,7 +16,6 @@ import com.example.demo.dto.MoneyResponseDto;
 import com.example.demo.exception.CCategoryNotFoundException;
 import com.example.demo.exception.CMoneyNotFoundException;
 import com.example.demo.exception.CUserNotFoundException;
-import com.example.demo.exception.CustomNotFoundException;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.MoneyRepository;
 import com.example.demo.repository.UserRepository;
@@ -35,7 +35,8 @@ public class MoneyService {
 	
 	public List<MoneyResponseDto> findAllByUserId(Long userId) {
 		User user = userRepository.findById(userId).orElseThrow(CUserNotFoundException::new);
-		return moneyRepository.findAllByUser(user).stream().map(p -> modelMapper.map(p, MoneyResponseDto.class)).collect(Collectors.toList());
+		List<Money> moneyList = moneyRepository.findAllByUser(user);
+		return moneyList.stream().map(p -> modelMapper.map(p, MoneyResponseDto.class)).collect(Collectors.toList());
 	}
 	
 	public MoneyResponseDto findById(Long moneyId) {
@@ -44,10 +45,10 @@ public class MoneyService {
 		return moneyResponseDto;
 	}
 
-	public void create(MoneyRequestDto moneyRequestDto) {
+	public void create(Principal principal, MoneyRequestDto moneyRequestDto) {
 		Category category = categoryRepository.findById(moneyRequestDto.getCategoryId()).orElseThrow(CCategoryNotFoundException::new);
-		Money money = modelMapper.map(moneyRequestDto, Money.class);
-		money.setCategory(category);
+		User user = userRepository.findById(Long.parseLong(principal.getName())).orElseThrow(CUserNotFoundException::new);
+		Money money = Money.builder().category(category).user(user).description(moneyRequestDto.getDescription()).build();
 		moneyRepository.save(money);
 	}
 
