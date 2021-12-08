@@ -15,17 +15,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.example.demo.common.BaseTimeEntity;
+import com.example.demo.dto.MoneyHistoryRequestDto;
+import com.example.demo.dto.MoneyRequestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity(name="money_history")
-@AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Builder
 public class MoneyHistory extends BaseTimeEntity {
 	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
@@ -39,5 +40,14 @@ public class MoneyHistory extends BaseTimeEntity {
 	private Date transactionDt;
 	@Enumerated(EnumType.STRING)
 	private Action action;
+	
+	@Builder
+    public MoneyHistory(Long price,Money money,String description,Date transactionDt,Action action) {
+		this.price = price;
+		this.money = money;
+		this.description = description;
+		this.transactionDt = transactionDt;
+		this.action = action;
+    }
 
 }

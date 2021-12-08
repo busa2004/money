@@ -1,8 +1,16 @@
 package com.example.demo.dto;
 
-import lombok.Data;
+import com.example.demo.domain.Category;
 
-@Data
+import lombok.Getter;
+
+@Getter
 public class CategoryRequestDto {
 	private String nm;
+	
+	public Category toEntity(){
+        return Category.builder()
+                .nm(nm)
+                .build();
+    }
 }

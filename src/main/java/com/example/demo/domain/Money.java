@@ -15,17 +15,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.example.demo.common.BaseTimeEntity;
+import com.example.demo.dto.CategoryRequestDto;
+import com.example.demo.dto.MoneyHistoryRequestDto;
+import com.example.demo.dto.MoneyRequestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity(name="money")
-@AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Builder
 public class Money extends BaseTimeEntity {
 	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
@@ -39,5 +41,29 @@ public class Money extends BaseTimeEntity {
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "category_id")
 	private Category category;
+	
+	@Builder
+    public Money(Long price,User user,String description,Category category) {
+		this.price = price;
+		this.user = user;
+		this.description = description;
+		this.category = category;
+    }
+	
+	public void update(MoneyRequestDto moneyRequestDto) {
+        this.price = moneyRequestDto.getPrice();
+        this.description = moneyRequestDto.getDescription();
+    }
 
+	public void updateMoney(MoneyHistoryRequestDto moneyHistoryRequestDto) {
+		switch(moneyHistoryRequestDto.getAction()) {
+		case ADD :
+			this.price = price + moneyHistoryRequestDto.getPrice();
+			break;
+		case UPDATE :
+			this.price = moneyHistoryRequestDto.getPrice();
+			break;
+		}
+		
+	}
 }

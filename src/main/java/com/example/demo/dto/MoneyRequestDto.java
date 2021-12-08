@@ -1,22 +1,19 @@
 package com.example.demo.dto;
 
-import java.util.Date;
-
-import javax.validation.constraints.NotNull;
-
-import com.example.demo.domain.Action;
 import com.example.demo.domain.Category;
+import com.example.demo.domain.Money;
+import com.example.demo.domain.User;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
 public class MoneyRequestDto {
 	
 	private Long price;
 	private Long categoryId;
 	private String description;
+	
+	public Money toEntity(Category category, User user){
+		return Money.builder().price(price).description(description).category(category).user(user).build();
+    }
 }

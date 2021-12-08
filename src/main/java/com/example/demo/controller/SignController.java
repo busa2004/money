@@ -1,16 +1,15 @@
 package com.example.demo.controller;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.common.SingleResult;
 import com.example.demo.config.JwtProvider;
 import com.example.demo.dto.TokenDto;
+import com.example.demo.dto.TokenRequestDto;
 import com.example.demo.dto.UserLoginRequestDto;
 import com.example.demo.dto.UserSignupRequestDto;
 import com.example.demo.service.ResponseService;
@@ -42,4 +41,11 @@ public class SignController {
         Long signupId = signService.signup(userSignupRequestDto);
         return responseService.getSingleResult(signupId);
     }
+    
+    @PostMapping("/reissue")
+    public SingleResult<TokenDto> reissue(
+            @RequestBody TokenRequestDto tokenRequestDto) {
+        return responseService.getSingleResult(signService.reissue(tokenRequestDto));
+    }
+    
 }

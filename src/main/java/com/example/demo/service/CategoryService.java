@@ -18,21 +18,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class CategoryService {
-	private final ModelMapper modelMapper;
 	private final CategoryRepository categoryRepository;
 	
 	public CategoryResponseDto findById(Long categoryId) {
-		return modelMapper.map(categoryRepository.findById(categoryId).orElseThrow(CCategoryNotFoundException::new), CategoryResponseDto.class);
+		Category category = categoryRepository.findById(categoryId).orElseThrow(CCategoryNotFoundException::new);
+		CategoryResponseDto categoryResponseDto = new CategoryResponseDto(category);
+		return categoryResponseDto;
 	}
 	
 	public List<CategoryResponseDto> findAll() {
 		List<Category> categoryList = categoryRepository.findAll();
-		List<CategoryResponseDto> categoryResponseDtoList = categoryList.stream().map(p -> modelMapper.map(p, CategoryResponseDto.class)).collect(Collectors.toList());
+		List<CategoryResponseDto> categoryResponseDtoList = categoryList.stream().map(p -> new CategoryResponseDto(p)).collect(Collectors.toList());
 		return categoryResponseDtoList;
 	}
 
 	public void create(CategoryRequestDto categoryRequest) {
-		Category category = modelMapper.map(categoryRequest, Category.class);
+		Category category = categoryRequest.toEntity();
 		categoryRepository.save(category);
 	}
 
@@ -43,7 +44,7 @@ public class CategoryService {
 	
 	public void update(Long categoryId, CategoryRequestDto categoryRequestDto) {
 		Category category = categoryRepository.findById(categoryId).orElseThrow(CCategoryNotFoundException::new);
-		category.setNm(categoryRequestDto.getNm());
+		category.update(categoryRequestDto);
 		categoryRepository.save(category);
 	}
 	

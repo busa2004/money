@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtProvider jwtProvider;
-
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -37,6 +39,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .anyRequest().permitAll()
                         //.antMatchers("/*/login", "/*/signup","/h2/**").permitAll()
                         //.anyRequest().hasRole("USER")
+                .and()
+			        .exceptionHandling()
+			        .authenticationEntryPoint(customAuthenticationEntryPoint)
+			        .accessDeniedHandler(customAccessDeniedHandler)
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
     }

@@ -1,18 +1,16 @@
 package com.example.demo.dto;
 
-import java.util.Date;
-
-import com.example.demo.domain.Action;
 import com.example.demo.domain.Category;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
 public class CategoryResponseDto {
 	private Long id;
 	private String nm;
+	
+	public CategoryResponseDto(Category category) {
+        this.id = category.getId();
+        this.nm = category.getNm();
+    }
 }

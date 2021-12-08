@@ -180,6 +180,18 @@ public class ExceptionAdvice {
         );
     }
     
+    /***
+     * -1012
+     * 종목기록을 찾지 못했을 때 발생시키는 예외
+     */
+    @ExceptionHandler(CMoneyNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected CommonResult moneyHistoryNotFoundException(HttpServletRequest request, CMoneyNotFoundException e) {
+        return responseService.getFailResult(
+                Integer.parseInt(getMessage("moneyNotFound.code")), getMessage("moneyNotFound.msg")
+        );
+    }
+    
 
     private String getMessage(String code) {
         return getMessage(code, null);

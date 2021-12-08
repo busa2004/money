@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.security.Principal;
+
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,14 +33,14 @@ public class MoneyHistoryController {
 	private MoneyHistoryService moneyHistoryService;
 	private ResponseService responseService;
 	
-	@GetMapping("/{id}")
-	public SingleResult<MoneyHistoryResponseDto> get(@PathVariable Long id) throws Exception {
-		return responseService.getSingleResult(moneyHistoryService.findById(id));
+	@GetMapping("/{moneyHistoryId}")
+	public SingleResult<MoneyHistoryResponseDto> get(@PathVariable Long moneyHistoryId) throws Exception {
+		return responseService.getSingleResult(moneyHistoryService.findById(moneyHistoryId));
 	}
 	
 	@GetMapping
-	public ListResult<MoneyHistoryResponseDto> getAll() throws Exception {
-		return responseService.getListResult(moneyHistoryService.findAll());
+	public ListResult<MoneyHistoryResponseDto> findAllByUserId(Principal principal) throws Exception {
+		return responseService.getListResult(moneyHistoryService.findAllByUserId(principal.getName()));
 	}
 	
 	@PostMapping

@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MoneyService {
 	
-	private final ModelMapper modelMapper;
 	private final MoneyRepository moneyRepository;
 	private final UserRepository userRepository;
 	private final CategoryRepository categoryRepository;
@@ -36,19 +35,19 @@ public class MoneyService {
 	public List<MoneyResponseDto> findAllByUserId(Long userId) {
 		User user = userRepository.findById(userId).orElseThrow(CUserNotFoundException::new);
 		List<Money> moneyList = moneyRepository.findAllByUser(user);
-		return moneyList.stream().map(p -> modelMapper.map(p, MoneyResponseDto.class)).collect(Collectors.toList());
+		return moneyList.stream().map(p -> new MoneyResponseDto(p)).collect(Collectors.toList());
 	}
 	
 	public MoneyResponseDto findById(Long moneyId) {
 		Money money = moneyRepository.findById(moneyId).orElseThrow(CMoneyNotFoundException::new);
-		MoneyResponseDto moneyResponseDto= modelMapper.map(money, MoneyResponseDto.class);
+		MoneyResponseDto moneyResponseDto= new MoneyResponseDto(money);
 		return moneyResponseDto;
 	}
 
 	public void create(Principal principal, MoneyRequestDto moneyRequestDto) {
 		Category category = categoryRepository.findById(moneyRequestDto.getCategoryId()).orElseThrow(CCategoryNotFoundException::new);
 		User user = userRepository.findById(Long.parseLong(principal.getName())).orElseThrow(CUserNotFoundException::new);
-		Money money = Money.builder().category(category).user(user).description(moneyRequestDto.getDescription()).build();
+		Money money = moneyRequestDto.toEntity(category, user);
 		moneyRepository.save(money);
 	}
 
@@ -59,8 +58,7 @@ public class MoneyService {
 	
 	public void update(Long moneyId, MoneyRequestDto moneyRequestDto) {
 		Money money = moneyRepository.findById(moneyId).orElseThrow(CMoneyNotFoundException::new);
-		money.setPrice(Optional.of(moneyRequestDto.getPrice()).orElse(money.getPrice()));
-		money.setDescription(Optional.of(moneyRequestDto.getDescription()).orElse(money.getDescription()));
+		money.update(moneyRequestDto);
 		moneyRepository.save(money);
 	}
 
