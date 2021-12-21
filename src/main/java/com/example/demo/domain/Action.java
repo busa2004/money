@@ -2,5 +2,6 @@ package com.example.demo.domain;
 
 public enum Action {
 	UPDATE,
-	ADD
+	ADD,
+	CREATE
 }

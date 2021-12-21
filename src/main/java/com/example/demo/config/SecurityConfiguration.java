@@ -9,6 +9,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.demo.exception.CustomAccessDeniedHandler;
+import com.example.demo.exception.CustomAuthenticationEntryPoint;
+import com.example.demo.filter.JwtAuthenticationFilter;
+import com.example.demo.filter.JwtProvider;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

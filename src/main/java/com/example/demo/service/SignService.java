@@ -5,19 +5,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.config.JwtProvider;
+import com.example.demo.domain.Action;
+import com.example.demo.domain.Category;
+import com.example.demo.domain.Money;
 import com.example.demo.domain.RefreshToken;
 import com.example.demo.domain.User;
+import com.example.demo.dto.MoneyRequestDto;
 import com.example.demo.dto.TokenDto;
 import com.example.demo.dto.TokenRequestDto;
 import com.example.demo.dto.UserLoginRequestDto;
 import com.example.demo.dto.UserLoginResponseDto;
 import com.example.demo.dto.UserSignupRequestDto;
+import com.example.demo.exception.CCategoryNotFoundException;
 import com.example.demo.exception.CEmailLoginFailedException;
 import com.example.demo.exception.CEmailSignupFailedException;
 import com.example.demo.exception.CRefreshTokenException;
 import com.example.demo.exception.CUserExistException;
 import com.example.demo.exception.CUserNotFoundException;
+import com.example.demo.filter.JwtProvider;
+import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.MoneyRepository;
 import com.example.demo.repository.RefreshTokenJpaRepo;
 import com.example.demo.repository.UserRepository;
 
@@ -32,7 +39,9 @@ public class SignService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RefreshTokenJpaRepo tokenJpaRepo;
-
+    private final MoneyService moneyService;
+    private final CategoryRepository categoryRepository;
+    
     @Transactional
     public TokenDto login(UserLoginRequestDto userLoginRequestDto) {
 
@@ -57,10 +66,16 @@ public class SignService {
     }
 
     @Transactional
-    public Long signup(UserSignupRequestDto userSignupDto) {
+    public UserLoginResponseDto signup(UserSignupRequestDto userSignupDto) {
         if (userRepository.findByEmail(userSignupDto.getEmail()).isPresent())
             throw new CEmailSignupFailedException();
-        return userRepository.save(userSignupDto.toEntity(passwordEncoder)).getUserId();
+        
+        User user = userRepository.save(userSignupDto.toEntity(passwordEncoder));
+        Category category = categoryRepository.findById(1L).orElseGet(()-> categoryRepository.save( Category.builder().nm("현금").build()) );	
+        MoneyRequestDto moneyRequestDto = MoneyRequestDto.builder().action(Action.CREATE).price(userSignupDto.getMoneyPrice()).categoryId(category.getId()).build();
+        moneyService.create(user.getUserId(), moneyRequestDto);
+        
+        return new UserLoginResponseDto(user);
     }
 
     @Transactional

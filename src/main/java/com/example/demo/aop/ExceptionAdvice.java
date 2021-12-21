@@ -1,4 +1,4 @@
-package com.example.demo.exception;
+package com.example.demo.aop;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +11,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.demo.common.CommonResult;
+import com.example.demo.exception.CAccessDeniedException;
+import com.example.demo.exception.CAuthenticationEntryPointException;
+import com.example.demo.exception.CCategoryNotFoundException;
+import com.example.demo.exception.CCommunicationException;
+import com.example.demo.exception.CEmailLoginFailedException;
+import com.example.demo.exception.CEmailSignupFailedException;
+import com.example.demo.exception.CExpiredAccessTokenException;
+import com.example.demo.exception.CMoneyHistoryNotFoundException;
+import com.example.demo.exception.CMoneyNotFoundException;
+import com.example.demo.exception.CRefreshTokenException;
+import com.example.demo.exception.CSocialAgreementException;
+import com.example.demo.exception.CUserExistException;
+import com.example.demo.exception.CUserNotFoundException;
 import com.example.demo.service.ResponseService;
 
 import lombok.RequiredArgsConstructor;
@@ -184,11 +197,11 @@ public class ExceptionAdvice {
      * -1012
      * 종목기록을 찾지 못했을 때 발생시키는 예외
      */
-    @ExceptionHandler(CMoneyNotFoundException.class)
+    @ExceptionHandler(CMoneyHistoryNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected CommonResult moneyHistoryNotFoundException(HttpServletRequest request, CMoneyNotFoundException e) {
+    protected CommonResult moneyHistoryNotFoundException(HttpServletRequest request, CMoneyHistoryNotFoundException e) {
         return responseService.getFailResult(
-                Integer.parseInt(getMessage("moneyNotFound.code")), getMessage("moneyNotFound.msg")
+                Integer.parseInt(getMessage("moneyHistoryNotFound.code")), getMessage("moneyHistoryNotFound.msg")
         );
     }
     

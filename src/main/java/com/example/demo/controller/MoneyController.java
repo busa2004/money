@@ -43,7 +43,7 @@ public class MoneyController {
 	
 	@PostMapping
 	public CommonResult create(Principal principal,@RequestBody MoneyRequestDto moneyRequestDto) throws Exception {
-		moneyService.create(principal,moneyRequestDto);
+		moneyService.create(Long.parseLong(principal.getName()),moneyRequestDto);
 		return responseService.getSuccessResult();
 	}
 	

@@ -1,15 +1,17 @@
 package com.example.demo.service;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.domain.Action;
 import com.example.demo.domain.Category;
 import com.example.demo.domain.Money;
+import com.example.demo.domain.MoneyHistory;
 import com.example.demo.domain.User;
 import com.example.demo.dto.MoneyRequestDto;
 import com.example.demo.dto.MoneyResponseDto;
@@ -17,6 +19,7 @@ import com.example.demo.exception.CCategoryNotFoundException;
 import com.example.demo.exception.CMoneyNotFoundException;
 import com.example.demo.exception.CUserNotFoundException;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.MoneyHistoryRepository;
 import com.example.demo.repository.MoneyRepository;
 import com.example.demo.repository.UserRepository;
 
@@ -29,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MoneyService {
 	
 	private final MoneyRepository moneyRepository;
+	private final MoneyHistoryRepository moneyHistoryRepository;
 	private final UserRepository userRepository;
 	private final CategoryRepository categoryRepository;
 	
@@ -44,11 +48,12 @@ public class MoneyService {
 		return moneyResponseDto;
 	}
 
-	public void create(Principal principal, MoneyRequestDto moneyRequestDto) {
-		Category category = categoryRepository.findById(moneyRequestDto.getCategoryId()).orElseThrow(CCategoryNotFoundException::new);
-		User user = userRepository.findById(Long.parseLong(principal.getName())).orElseThrow(CUserNotFoundException::new);
+	public void create(Long userId, MoneyRequestDto moneyRequestDto) {
+		Category category = categoryRepository.findById(moneyRequestDto.getCategoryId()).orElseThrow(CCategoryNotFoundException::new);	
+		User user = userRepository.findById(userId).orElseThrow(CUserNotFoundException::new);
 		Money money = moneyRequestDto.toEntity(category, user);
-		moneyRepository.save(money);
+		MoneyHistory moneyHisotry = money.toHistoryEntity(moneyRequestDto);
+		moneyHistoryRepository.save(moneyHisotry);
 	}
 
 	public void delete(Long moneyId) {
@@ -59,7 +64,8 @@ public class MoneyService {
 	public void update(Long moneyId, MoneyRequestDto moneyRequestDto) {
 		Money money = moneyRepository.findById(moneyId).orElseThrow(CMoneyNotFoundException::new);
 		money.update(moneyRequestDto);
-		moneyRepository.save(money);
+		MoneyHistory moneyHisotry = money.toHistoryEntity(moneyRequestDto);
+		moneyHistoryRepository.save(moneyHisotry);
 	}
 
 }

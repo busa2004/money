@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.exception;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

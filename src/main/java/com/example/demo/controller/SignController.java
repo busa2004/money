@@ -7,11 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.common.SingleResult;
-import com.example.demo.config.JwtProvider;
 import com.example.demo.dto.TokenDto;
 import com.example.demo.dto.TokenRequestDto;
 import com.example.demo.dto.UserLoginRequestDto;
+import com.example.demo.dto.UserLoginResponseDto;
 import com.example.demo.dto.UserSignupRequestDto;
+import com.example.demo.filter.JwtProvider;
 import com.example.demo.service.ResponseService;
 import com.example.demo.service.SignService;
 
@@ -36,10 +37,10 @@ public class SignController {
     }
 
     @PostMapping("/signup")
-    public SingleResult<Long> signup(
+    public SingleResult<UserLoginResponseDto> signup(
             @RequestBody UserSignupRequestDto userSignupRequestDto) {
-        Long signupId = signService.signup(userSignupRequestDto);
-        return responseService.getSingleResult(signupId);
+        UserLoginResponseDto userLoginResponseDto = signService.signup(userSignupRequestDto);
+        return responseService.getSingleResult(userLoginResponseDto);
     }
     
     @PostMapping("/reissue")

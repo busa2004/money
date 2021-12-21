@@ -1,6 +1,7 @@
 package com.example.demo.domain;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.ColumnDefault;
 
 import com.example.demo.common.BaseTimeEntity;
 import com.example.demo.dto.CategoryRequestDto;
@@ -33,6 +36,7 @@ public class Money extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	@Column(name = "money_id")
 	private Long id;
+	@ColumnDefault("0") 
 	private Long price;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -51,19 +55,26 @@ public class Money extends BaseTimeEntity {
     }
 	
 	public void update(MoneyRequestDto moneyRequestDto) {
-        this.price = moneyRequestDto.getPrice();
-        this.description = moneyRequestDto.getDescription();
-    }
-
-	public void updateMoney(MoneyHistoryRequestDto moneyHistoryRequestDto) {
-		switch(moneyHistoryRequestDto.getAction()) {
+        
+        switch(moneyRequestDto.getAction()) {
 		case ADD :
-			this.price = price + moneyHistoryRequestDto.getPrice();
+			this.price = price + moneyRequestDto.getPrice();
 			break;
-		case UPDATE :
-			this.price = moneyHistoryRequestDto.getPrice();
+		default :
+			this.price = moneyRequestDto.getPrice();
 			break;
 		}
-		
+        
+        this.description = moneyRequestDto.getDescription();
+        
+    }
+
+	public MoneyHistory toHistoryEntity(MoneyRequestDto moneyRequestDto) {
+		return MoneyHistory.builder().money(this)
+				.action(moneyRequestDto.getAction())
+				.transactionDt(new Date())
+				.price(Optional.ofNullable(moneyRequestDto.getPrice()).orElse(0L))
+				.description(moneyRequestDto.getDescription()).build();
+				
 	}
 }

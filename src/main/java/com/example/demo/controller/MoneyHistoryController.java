@@ -1,14 +1,17 @@
 package com.example.demo.controller;
 
 import java.security.Principal;
+import java.util.Date;
 
 import javax.validation.Valid;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.common.CommonResult;
@@ -16,8 +19,6 @@ import com.example.demo.common.ListResult;
 import com.example.demo.common.SingleResult;
 import com.example.demo.dto.MoneyHistoryRequestDto;
 import com.example.demo.dto.MoneyHistoryResponseDto;
-import com.example.demo.dto.MoneyRequestDto;
-import com.example.demo.dto.MoneyResponseDto;
 import com.example.demo.service.MoneyHistoryService;
 import com.example.demo.service.ResponseService;
 
@@ -39,16 +40,13 @@ public class MoneyHistoryController {
 	}
 	
 	@GetMapping
-	public ListResult<MoneyHistoryResponseDto> findAllByUserId(Principal principal) throws Exception {
-		return responseService.getListResult(moneyHistoryService.findAllByUserId(principal.getName()));
+	public ListResult<MoneyHistoryResponseDto> findAllMoneyHistory(Principal principal,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyyMMdd") Date moneyHistoryPeriodStart,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyyMMdd") Date moneyHistoryPeriodEnd,
+			@RequestParam(required = false) Long categoryId
+			) throws Exception {
+		return responseService.getListResult(moneyHistoryService.findAllMoneyHistory
+				(principal.getName(),categoryId,moneyHistoryPeriodStart,moneyHistoryPeriodEnd));
 	}
-	
-	@PostMapping
-	public CommonResult save(@RequestBody @Valid MoneyHistoryRequestDto money) throws Exception {
-		moneyHistoryService.save(money);
-		log.info("money :{} ",money);
-		return responseService.getSuccessResult();
-	}
-	
 	
 }

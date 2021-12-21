@@ -21,6 +21,7 @@ public class UserSignupRequestDto {
     private String name;
     private String nickName;
     private String provider;
+    private Long moneyPrice;
 
     public User toEntity(PasswordEncoder passwordEncoder) {
         return User.builder()

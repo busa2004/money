@@ -43,8 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class MoneyHistoryService {
-	private final UserRepository userRepository;
-	private final MoneyRepository moneyRepository;
 	private final MoneyHistoryRepository moneyHistoryRepository;
 	
 	public MoneyHistoryResponseDto findById(Long moneyHistoryId) throws Exception {
@@ -52,21 +50,8 @@ public class MoneyHistoryService {
 		return new MoneyHistoryResponseDto(moneyHistory);
 	}
 	
-	public List<MoneyHistoryResponseDto> findAllByUserId(String userId) {
-		User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(CUserNotFoundException::new);
-		return moneyHistoryRepository.findAllByUser(user).stream().map(p -> new MoneyHistoryResponseDto(p)).collect(Collectors.toList());
+	public List<MoneyHistoryResponseDto> findAllMoneyHistory(String userId, Long categoryId, Date moneyHistoryPeriodStart, Date moneyHistoryPeriodEnd) {
+		return moneyHistoryRepository.findAllMoneyHistory(Long.parseLong(userId) ,categoryId,moneyHistoryPeriodStart,moneyHistoryPeriodEnd).stream().map(p -> new MoneyHistoryResponseDto(p)).collect(Collectors.toList());
 
 	}
-	
-	@Transactional
-	public void save(MoneyHistoryRequestDto moneyHistoryRequestDto) throws Exception {
-		Money money = moneyRepository.findById(moneyHistoryRequestDto.getMoneyId()).orElseThrow(CMoneyNotFoundException::new);
-		money.updateMoney(moneyHistoryRequestDto);
-		MoneyHistory moneyHistory = moneyHistoryRequestDto.toEntity(money);
-		moneyHistoryRepository.save(moneyHistory);
-	}
-
-	
-
-
 }

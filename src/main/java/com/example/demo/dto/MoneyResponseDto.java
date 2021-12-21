@@ -10,15 +10,15 @@ import lombok.Getter;
 public class MoneyResponseDto {
 	private Long id;
 	private Long price;
-	private User user;
-	private Category category;
+	private Long categoryId;
+	private	String categoryNm;
 	private String description;
 	
 	public MoneyResponseDto(Money money) {
         this.id = money.getId();
         this.price = money.getPrice();
-        this.user = money.getUser();
-        this.category = money.getCategory();
+        this.categoryId = money.getCategory().getId();
+        this.categoryNm = money.getCategory().getNm();
         this.description = money.getDescription();
     }
 }
